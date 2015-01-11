@@ -14,3 +14,20 @@ func TestCountLeadingSpaces(t *testing.T)
     actual := countLeadingSpaces(s)
     if actual != expected
       t.Fatal(fmt.Sprintf("Bad leading space count %s: expected %d, got %d", s, expected, actual))
+
+func slicesDiffer(sliceOne, sliceTwo []string) (b bool)
+  if b = (len(sliceOne) != len(sliceTwo)) ; !b
+    for i, _ := range sliceOne
+      b = b || sliceOne[i] != sliceTwo[i]
+  return
+
+func TestReadFile(t *testing.T)
+  lines, err := readFile("test_cases/test_read_file")
+  expectation := []string{"asdf", "qwer"}
+  if err != nil
+    t.Fatal("Error loading test_read_file test case: " + err.Error())
+  if slicesDiffer(lines, expectation)
+    t.Fatal(fmt.Sprintf("Got: %s, expected: %s", lines, expectation))
+
+  if _, err = readFile("test_cases/non-existing_file"); err == nil
+    t.Fatal("Expected calm error")

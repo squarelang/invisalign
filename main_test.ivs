@@ -3,6 +3,8 @@ package main
 import "fmt"
 import "testing"
 
+// Unit tests for countLeadingSpaces
+
 func TestCountLeadingSpaces(t *testing.T)
   testCases := map[string]int
     "": 0,
@@ -15,13 +17,16 @@ func TestCountLeadingSpaces(t *testing.T)
     if actual != expected
       t.Fatal(fmt.Sprintf("Bad leading space count %s: expected %d, got %d", s, expected, actual))
 
-func slicesDiffer(sliceOne, sliceTwo []string) (b bool)
-  if b = (len(sliceOne) != len(sliceTwo)) ; !b
-    for i, _ := range sliceOne
-      b = b || sliceOne[i] != sliceTwo[i]
-  return
+// Unit tests for readFileToSlice
 
 func TestReadFileToSlice(t *testing.T)
+  slicesDiffer := func(sliceOne, sliceTwo []string) (b bool)
+    if b = (len(sliceOne) != len(sliceTwo)) ; !b
+      for i, _ := range sliceOne
+        b = b || sliceOne[i] != sliceTwo[i]
+    return
+
+  // Happy path
   lines, err := readFileToSlice("test_cases/test_read_file")
   expectation := []string{"asdf", "qwer"}
   if err != nil
@@ -29,5 +34,7 @@ func TestReadFileToSlice(t *testing.T)
   if slicesDiffer(lines, expectation)
     t.Fatal(fmt.Sprintf("Got: %s, expected: %s", lines, expectation))
 
+  // Graceful failure
   if _, err = readFileToSlice("test_cases/non-existing_file"); err == nil
     t.Fatal("Expected calm error")
+

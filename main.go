@@ -10,6 +10,8 @@ import (
 	"strings"
 )
 
+// Counts the instances of the " " character that prefix the given string.
+
 func countLeadingSpaces(s string) int {
 	if len(s) == 0 || !strings.HasPrefix(s, " ") {
 		return 0
@@ -17,7 +19,9 @@ func countLeadingSpaces(s string) int {
 	return 1 + countLeadingSpaces(s[1:len(s)])
 }
 
-func invisalign(lines []string) (linesOut []string) {
+// Adds curly braces based on symantic whitespacing.
+
+func addBraces(lines []string) (linesOut []string) {
 	// This orthodontist puts the braces ON
 	lines = append(lines, "")
 	prevLine := struct{ spaces, lineNum int }{}
@@ -53,6 +57,8 @@ func invisalign(lines []string) (linesOut []string) {
 	return
 }
 
+// Reads a file to a slice of strings.
+
 func readFileToSlice(filename string) (lines []string, err error) {
 	file, err := os.Open(filename)
 	defer file.Close()
@@ -65,8 +71,11 @@ func readFileToSlice(filename string) (lines []string, err error) {
 	return
 }
 
-func main() {
-	args := os.Args[1:len(os.Args)]
+// Invisalign is the full compile function. Accepts a filepath and an optional parameter '-w' which,
+// if given, says to overwrite the given file with the compiled go. Otherwise, prints the go code to
+// stdout.
+
+func invisalign(args []string) {
 	filenameIn := args[len(args)-1]
 
 	// Parse source file
@@ -76,7 +85,7 @@ func main() {
 	}
 
 	// Visit the orthodontist
-	linesOut := invisalign(linesIn)
+	linesOut := addBraces(linesIn)
 
 	// Write to temp file
 	output, err := ioutil.TempFile("/tmp", filepath.Base(filenameIn))
@@ -99,4 +108,9 @@ func main() {
 	if args[0] == "-w" {
 		os.Rename(output.Name(), filenameIn)
 	}
+}
+
+func main() {
+	args := os.Args[1:len(os.Args)]
+	invisalign(args)
 }

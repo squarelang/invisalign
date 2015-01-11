@@ -53,7 +53,7 @@ func invisalign(lines []string) (linesOut []string) {
 	return
 }
 
-func readFile(filename string) (lines []string, err error) {
+func readFileToSlice(filename string) (lines []string, err error) {
 	file, err := os.Open(filename)
 	defer file.Close()
 	if err == nil {
@@ -70,7 +70,7 @@ func main() {
 	filenameIn := args[len(args)-1]
 
 	// Parse source file
-	linesIn, err := readFile(filenameIn)
+	linesIn, err := readFileToSlice(filenameIn)
 	if err != nil {
 		log.Fatalf("Couldn't open input file for reading: " + err.Error())
 	}

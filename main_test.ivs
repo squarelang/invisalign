@@ -1,0 +1,16 @@
+package main
+
+import "fmt"
+import "testing"
+
+func TestCountLeadingSpaces(t *testing.T)
+  testCases := map[string]int
+    "": 0,
+    "  ": 2,
+    "   asdf asdf ": 3,
+    "\t ": 0,
+
+  for s, expected := range testCases
+    actual := countLeadingSpaces(s)
+    if actual != expected
+      t.Fatal(fmt.Sprintf("Bad leading space count %s: expected %d, got %d", s, expected, actual))

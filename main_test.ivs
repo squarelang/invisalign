@@ -1,6 +1,7 @@
 package main
 
-import "fmt"
+import "bytes"
+import "os/exec"
 import "testing"
 
 // Unit tests for countLeadingSpaces
@@ -15,7 +16,7 @@ func TestCountLeadingSpaces(t *testing.T)
   for s, expected := range testCases
     actual := countLeadingSpaces(s)
     if actual != expected
-      t.Fatal(fmt.Sprintf("Bad leading space count %s: expected %d, got %d", s, expected, actual))
+      t.Fatal("Bad leading space count %s: expected %d, got %d", s, expected, actual)
 
 // Unit tests for readFileToSlice
 
@@ -32,9 +33,25 @@ func TestReadFileToSlice(t *testing.T)
   if err != nil
     t.Fatal("Error loading test_read_file test case: " + err.Error())
   if slicesDiffer(lines, expectation)
-    t.Fatal(fmt.Sprintf("Got: %s, expected: %s", lines, expectation))
+    t.Fatal("Got: %s, expected: %s", lines, expectation)
 
   // Graceful failure
   if _, err = readFileToSlice("test_cases/non-existing_file"); err == nil
     t.Fatal("Expected calm error")
 
+// Integration tests: run the invisalign compile, execute the source code and assert on its stdout.
+
+func TestInvisalign(t *testing.T)
+  testCases := map[string]string
+    "test_cases/hello_world": "Hello, world!\n"
+
+  for source, expectedOutput := range testCases
+    compiledSource := invisalign([]string{source})
+    exec.Command("gofmt", "-w", compiledSource).Run()
+    exec.Command("mv", compiledSource, compiledSource + ".go").Run()
+    cmd := exec.Command("go", "run", compiledSource + ".go")
+    b := bytes.Buffer{}
+    cmd.Stdout = &b
+    cmd.Run()
+    if actualOutput := b.String(); actualOutput != expectedOutput
+      t.Fatalf("%s: Expected output %s, got %s", source, expectedOutput, actualOutput)

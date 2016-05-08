@@ -75,7 +75,7 @@ func readFileToSlice(filename string) (lines []string, err error) {
 // if given, says to overwrite the given file with the compiled go. Otherwise, prints the go code to
 // stdout.
 
-func invisalign(args []string) {
+func invisalign(args []string) string {
 	filenameIn := args[len(args)-1]
 
 	// Parse source file
@@ -108,6 +108,8 @@ func invisalign(args []string) {
 	if args[0] == "-w" {
 		os.Rename(output.Name(), filenameIn)
 	}
+
+	return output.Name()
 }
 
 func main() {
